@@ -5,6 +5,7 @@ const DINO_START_POSITION := Vector2i(150, 485)
 const CAMERA_START_POSITION := Vector2i(576, 324)
 
 var score : int
+const SCORE_MODIFIER : int = 10
 
 var speed : float
 const START_SPEED : float = 10.0
@@ -39,10 +40,12 @@ func _process(delta):
 	$Camera2D.position.x += speed
 	
 	# Update score
-	score += speed / 10
-	# Can't devided to 100 cause it will cause 
-	print(score)
+	score += speed
+	show_score()
 	
 	# Update the ground position
 	if $Camera2D.position.x - $Ground.position.x > screen_size.x * 1.5:
 		$Ground.position.x += screen_size.x # Move the ground along by the width of the screen # HOW?
+
+func show_score():
+	$HUD.get_node("ScoreLabel").text = "SCORE: " + str(score / SCORE_MODIFIER)
