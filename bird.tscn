@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://da2sketdtrln1"]
+[gd_scene load_steps=10 format=3 uid="uid://da2sketdtrln1"]
 
 [ext_resource type="Texture2D" uid="uid://dyasm1fruq87r" path="res://assets/img/obstacles/Bird.png" id="1_6d2rr"]
+[ext_resource type="Script" path="res://bird.gd" id="1_tod3y"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_kvb28"]
 atlas = ExtResource("1_6d2rr")
@@ -46,6 +47,7 @@ height = 21.0
 size = Vector2(11, 11.5)
 
 [node name="Bird" type="Area2D"]
+script = ExtResource("1_tod3y")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 texture_filter = 1
@@ -55,10 +57,14 @@ animation = &"flying"
 autoplay = "flying"
 frame_progress = 0.79193
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="AnimatedSprite2D"]
-position = Vector2(4.25, -0.75)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(17, -3)
+scale = Vector2(4, 4)
 shape = SubResource("CapsuleShape2D_0ye35")
 
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="AnimatedSprite2D"]
-position = Vector2(-9.5, 0.5)
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(-38, 2)
+scale = Vector2(4, 4)
 shape = SubResource("RectangleShape2D_fyadk")

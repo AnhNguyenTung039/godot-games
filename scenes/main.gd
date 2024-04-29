@@ -80,6 +80,11 @@ func _process(delta):
 		# Update the ground position
 		if $Camera2D.position.x - $Ground.position.x > screen_size.x * 1.5:
 			$Ground.position.x += screen_size.x # Move the ground along by the width of the screen # HOW?
+		
+		# Remove obstacles that has gone off-screen
+		for obstacle_item in obstacles:
+			if obstacle_item.position.x < ($Camera2D.position.x - screen_size.x):
+				remove_obstacle(obstacle_item)
 	else:
 		if Input.is_action_just_pressed("ui_accept"):
 			game_running = true
@@ -103,13 +108,35 @@ func generate_obstacle():
 			var obstacle_y : int = screen_size.y - ground_height - (obstacle_height * obstacle_scale.y / 2) + 5
 			last_obstacle = obstacle
 			add_obstacle(obstacle, obstacle_x, obstacle_y)
+		if difficulty == MAX_DIFFICULTY:
+			if (randi() % 2) == 0:
+				# Generate the bird obstacle
+				obstacle = bird_scene.instantiate()
+				var obstacle_x : int = screen_size.x + score + 100
+				var obstacle_y : int = bird_heights[randi() % bird_heights.size()]
+				last_obstacle = obstacle
+				add_obstacle(obstacle, obstacle_x, obstacle_y)
+
+func hit_obstacle(body):
+	if body.name == "Dino":
+		game_over()
 
 func add_obstacle(obstacle, x, y):
 	obstacle.position = Vector2i(x, y)
+	obstacle.body_entered.connect(hit_obstacle)
 	add_child(obstacle) # Add obstacle as a child of the current node which is main scene
 	obstacles.append(obstacle) # Add obstacle to the obstacles array
+
+func remove_obstacle(obstacle):
+	# Remove the obstacle from the main node
+	obstacle.queue_free()
+	obstacles.erase(obstacle)
 
 func adjust_difficulty():
 	difficulty = score / SPEED_MODIFIER
 	if difficulty > MAX_DIFFICULTY:
 		difficulty = MAX_DIFFICULTY
+
+func game_over():
+	get_tree().paused = true
+	game_running = false
