@@ -19,6 +19,8 @@ const MAX_DIFFICULTY : int = 2
 var score : int
 const SCORE_MODIFIER : int = 10
 
+var high_score : int
+
 var speed : float
 const START_SPEED : float = 10.0
 const MAX_SPEED : int = 25
@@ -35,6 +37,7 @@ var last_obstacle
 func _ready():
 	screen_size = get_window().size
 	ground_height = $Ground.get_node("Sprite2D").texture.get_height()
+	$GameOver.get_node("Button").pressed.connect(new_game)
 	new_game()
 
 func new_game ():
@@ -42,7 +45,15 @@ func new_game ():
 	score = 0
 	show_score()
 	game_running = false
+	
+	get_tree().paused = false # Unpause the game
+	
 	difficulty = 0
+	
+	# Delete all obstacles
+	for obstacle_item in obstacles:
+		obstacle_item.queue_free()
+	obstacles.clear()
 	
 	# Reset the nodes
 	$Dino.position = DINO_START_POSITION
@@ -52,8 +63,9 @@ func new_game ():
 	
 	$Ground.position = Vector2i(0, 0)
 	
-	# Shot start label
+	# Reset HUD and game over screen
 	$HUD.get_node("StartLabel").show()
+	$GameOver.hide()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -138,5 +150,12 @@ func adjust_difficulty():
 		difficulty = MAX_DIFFICULTY
 
 func game_over():
+	check_high_score()
 	get_tree().paused = true
 	game_running = false
+	$GameOver.show()
+
+func check_high_score():
+	if score > high_score:
+		high_score = score
+		$HUD.get_node("HighScoreLabel").text = "HIGH SCORE: " + str(high_score / SCORE_MODIFIER)		
