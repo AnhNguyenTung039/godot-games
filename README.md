@@ -1,2 +1,2 @@
-# godot-games
-Library of my Godot games
+# godot-jumping-dino-game
+My Jumping Dino Godot game
